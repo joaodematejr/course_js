@@ -33,6 +33,8 @@ class CalcController {
         //LIMPAR DISPLAY DA CALCULADORA 
         this._operation = [];
         this.setLastNumberToDisplay();
+        this._lastNumber = '';
+        this._lastOperator = '';
     }
 
     clearEntry() {
@@ -123,11 +125,6 @@ class CalcController {
                 //TROCAR O OPERADOR
                 this.setLastOperation(value);
 
-            } else if (isNaN(value)) {
-
-                //OUTRA COISA
-                //console.log(value);
-
             } else {
                 this.pushOperation(value);
                 this.setLastNumberToDisplay();
@@ -139,7 +136,7 @@ class CalcController {
             } else {
                 //ADICIONA UMA NOVA INFORMAÇÃO NO ARRAY
                 let newValue = this.getLastOperation().toString() + value.toString();
-                this.setLastOperation(parseInt(newValue));
+                this.setLastOperation(parseFloat(newValue));
                 //ATUALIZAR DISPLAY.se
                 this.setLastNumberToDisplay();
             }
@@ -153,6 +150,15 @@ class CalcController {
         this.displayCalc = "Error";
     }
 
+    addDot() {
+        let lastOperation = this.getLastOperation();
+        if (this.isOperator(lastOperation) || !lastOperation) {
+            this.pushOperation('0.');
+        } else {
+            this.setLastOperation(lastOperation.toString() + '.');
+        }
+        this.setLastNumberToDisplay();
+    }
     execBtn(value) {
         switch (value) {
             case 'ac':
@@ -181,7 +187,7 @@ class CalcController {
                 break;
 
             case 'ponto':
-                this.addOperation('.');
+                this.addDot('.');
                 break;
 
             case '0':
