@@ -1,10 +1,10 @@
 class CalcController {
 
-    constructor () {
-
+    constructor() {
+        this._audio = new Audio('click.mp3');
+        this._audioOnOff = false;
         this._lastOperator = '';
         this._lastNumber = '';
-
         this._operation = [];
         this._locate = 'pt-br';
         this._displayCalcE1 = document.querySelector('#display');
@@ -15,6 +15,24 @@ class CalcController {
         this.initButtonsEvents();
         this.initKeyboard();
     }
+    //COPIAR
+    copyToClipboard() {
+        let input = document.createElement('input');
+        input.value = this.displayCalc;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('Copy');
+        input.remove();
+
+    }
+    //COLAR
+    pasteFromClipboard() {
+        document.addEventListener('paste', e => {
+            let text = e.clipboardData.getData('Text');
+            this.displayCalc = parseFloat(text);
+            console.log(text);
+        });
+    }
     //INICIAR COMPONENTES
     initialize() {
         this.setDisplayDateTime();
@@ -22,11 +40,29 @@ class CalcController {
             this.setDisplayDateTime();
         }, 1000);
         this.setLastNumberToDisplay();
+        this.pasteFromClipboard();
+        document.querySelectorAll('.btn-ac').forEach(btn => {
+            btn.addEventListener('dblclick', e => {
+                this.toggleAudio();
+            });
+        });
+    }
+    //FUNCAO AUDIO CALCULADORA
+    toggleAudio() {
+        this._audioOnOff = !this._audioOnOff;
+    }
+    //PLAY AUDIO
+    playAudio() {
+        if (this._audioOnOff) {
+            this._audio.currentTime = 0;
+            this._audio.play();
+        }
     }
     //INICIAR FUNCAO TECLADO
     initKeyboard() {
         document.addEventListener('keyup', e => {
-            console.log(e.key);
+            this.playAudio();
+            //console.log(e.key);
             switch (e.key) {
                 case 'Escape':
                     this.clearAll();
@@ -60,6 +96,9 @@ class CalcController {
                 case '8':
                 case '9':
                     this.addOperation(parseInt(e.key));
+                    break;
+                case 'c':
+                    if (e.ctrlKey) this.copyToClipboard();
                     break;
             }
         });
@@ -104,8 +143,15 @@ class CalcController {
         }
     }
     getResult() {
+        try {
+            return eval(this._operation.join(''));
+        } catch (e) {
+            setTimeout(() => {
+                this.setError();
+            }, 1)
 
-        return eval(this._operation.join(''));
+        }
+
     }
     //FUNCAO CALCULAR
     calc() {
@@ -204,6 +250,7 @@ class CalcController {
         this.setLastNumberToDisplay();
     }
     execBtn(value) {
+        this.playAudio();
         switch (value) {
             case 'ac':
                 this.clearAll();
@@ -287,6 +334,10 @@ class CalcController {
         return this._displayCalcE1.innerHTML;
     }
     set displayCalc(value) {
+        if (value.toString().length > 10) {
+            this.setError();
+            return false;
+        }
         this._displayCalcE1.innerHTML = value;
     }
     get currentDate() {
