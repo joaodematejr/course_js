@@ -1,0 +1,14 @@
+{
+  "name": "joaodematejr",
+  "version": "1.0.0",
+  "description": "Exemplo electronjs",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "João Dematé Jr",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^4.0.6"
+  }
+}
