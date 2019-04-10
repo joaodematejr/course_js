@@ -198,13 +198,13 @@ class UserController {
     }
 
     selectAll() {
-        //let users = User.getUsersStorage();
 
-        let ajax = new XMLHttpRequest();
+        var xmlhttp = new XMLHttpRequest(),
+            method = 'GET',
+            url = 'http://localhost:3000/users';
 
-        ajax.open('GET', '/users');
-
-        ajax.onload = event => {
+        xmlhttp.open(method, url, true);
+        xmlhttp.onload = function () {
             let obj = { users: [] };
             try {
                 obj = JSON.parse(ajax.responseText);
@@ -221,7 +221,11 @@ class UserController {
 
             });
         };
-        ajax.send();
+        xmlhttp.send();
+        console.log(xmlhttp.send())
+
+        // let users = User.getUsersStorage();
+
     };
 
     addLine(dataUser) {
