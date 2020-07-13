@@ -1,6 +1,6 @@
 class UserController {
 
-    constructor(formIdCreate, formIdUpdate, tableId){
+    constructor(formIdCreate, formIdUpdate, tableId) {
 
         this.formEl = document.getElementById(formIdCreate);
         this.formUpdateEl = document.getElementById(formIdUpdate);
@@ -12,9 +12,9 @@ class UserController {
 
     }
 
-    onEdit(){
+    onEdit() {
 
-        document.querySelector("#box-user-update .btn-cancel").addEventListener("click", e=>{
+        document.querySelector("#box-user-update .btn-cancel").addEventListener("click", e => {
 
             this.showPanelCreate();
 
@@ -73,7 +73,7 @@ class UserController {
 
     }
 
-    onSubmit(){
+    onSubmit() {
 
         this.formEl.addEventListener("submit", event => {
 
@@ -89,7 +89,7 @@ class UserController {
 
             this.getPhoto(this.formEl).then(
                 (content) => {
-                    
+
                     values.photo = content;
 
                     values.save();
@@ -100,7 +100,7 @@ class UserController {
 
                     btn.disabled = false;
 
-                }, 
+                },
                 (e) => {
                     console.error(e);
                 }
@@ -110,9 +110,9 @@ class UserController {
 
     }
 
-    getPhoto(formEl){
+    getPhoto(formEl) {
 
-        return new Promise((resolve, reject)=>{
+        return new Promise((resolve, reject) => {
 
             let fileReader = new FileReader();
 
@@ -132,7 +132,7 @@ class UserController {
 
             };
 
-            fileReader.onerror = (e)=>{
+            fileReader.onerror = (e) => {
 
                 reject(e);
 
@@ -148,7 +148,7 @@ class UserController {
 
     }
 
-    getValues(formEl){
+    getValues(formEl) {
 
         let user = {};
         let isValid = true;
@@ -168,7 +168,7 @@ class UserController {
                     user[field.name] = field.value;
                 }
 
-            } else if(field.name == "admin") {
+            } else if (field.name == "admin") {
 
                 user[field.name] = field.checked;
 
@@ -197,20 +197,28 @@ class UserController {
 
     }
 
-    selectAll(){
+    selectAll() {
 
-        let users = User.getUsersStorage();
+        //let users = User.getUsersStorage();
 
-        users.forEach(dataUser=>{
+        let ajax = new XMLHttpRequest();
 
-            let user = new User();
+        ajax.open('GET', '/users');
 
-            user.loadFromJSON(dataUser);
-
-            this.addLine(user);
-
-        });
-
+        ajax.onload = event => {
+            let obj = { users: [] };
+            try {
+                obj = JSON.parse(ajax.responseText);
+            } catch (error) {
+                console.log(error);
+            }
+            obj.users.forEach(dataUser => {
+                let user = new User();
+                user.loadFromJSON(dataUser);
+                this.addLine(user);
+            });
+        };
+        ajax.send()
     }
 
     addLine(dataUser) {
@@ -223,7 +231,7 @@ class UserController {
 
     }
 
-    getTr(dataUser, tr = null){
+    getTr(dataUser, tr = null) {
 
         if (tr === null) tr = document.createElement('tr');
 
@@ -247,7 +255,7 @@ class UserController {
 
     }
 
-    addEventsTr(tr){
+    addEventsTr(tr) {
 
         tr.querySelector(".btn-delete").addEventListener("click", e => {
 
@@ -311,7 +319,7 @@ class UserController {
 
     }
 
-    showPanelCreate(){
+    showPanelCreate() {
 
         document.querySelector("#box-user-create").style.display = "block";
         document.querySelector("#box-user-update").style.display = "none";
@@ -325,19 +333,19 @@ class UserController {
 
     }
 
-    updateCount(){
+    updateCount() {
 
         let numberUsers = 0;
         let numberAdmin = 0;
 
-        [...this.tableEl.children].forEach(tr=>{
+        [...this.tableEl.children].forEach(tr => {
 
             numberUsers++;
-            
+
             let user = JSON.parse(tr.dataset.user);
 
             if (user._admin) numberAdmin++;
-            
+
         });
 
         document.querySelector("#number-users").innerHTML = numberUsers;
