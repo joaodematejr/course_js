@@ -283,22 +283,24 @@ class DropBoxController {
             ${this.getFileIconView(file)}
             <div class="name text-center">${file.name}</div>
          `
+      this.initEventsLi(li);
       return li;
    }
    //LER BANCO DE DADOS
    readFiles() {
       this.getFirebaseRef().on('value', snapshot => {
-
          this.listFilesEl.innerHTML = '';
-
          snapshot.forEach(snapshotItem => {
             let key = snapshotItem.key;
             let data = snapshotItem.val();
-
-            console.log(key, data);
-
             this.listFilesEl.appendChild(this.getFileView(data, key))
          });
       })
+   }
+
+   initEventsLi(li) {
+      li.addEventListener('click', () => {
+         li.classList.toggle('selected');
+      });
    }
 }
