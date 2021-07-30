@@ -37,10 +37,9 @@ class WhatsAppController {
     };
 
     Element.prototype.css = function (styles) {
-      for (const name of styles) {
+      for (let name in styles) {
         this.style[name] = styles[name];
       }
-      return this;
     };
 
     Element.prototype.addClass = function (name) {
@@ -77,14 +76,17 @@ class WhatsAppController {
 
   initEvents() {
     this.el.myPhoto.on("click", (e) => {
-      //this.closeAllLeftPanel();
-      this.el.panelAddContact.show();
+      console.log("*** clique no botão myPhoto");
+      this.closeAllLeftPanel();
+      this.el.panelEditProfile.show();
       setTimeout(() => {
         this.el.panelEditProfile.addClass("open");
       }, 300);
     });
 
     this.el.btnNewContact.on("click", (e) => {
+      e.preventDefault();
+      console.log("*** clique no botão newContact");
       this.closeAllLeftPanel();
       this.el.panelAddContact.show();
       setTimeout(() => {
@@ -119,10 +121,48 @@ class WhatsAppController {
       e.preventDefault();
       let formtData = new FormData(this.el.formPanelAddContact);
     });
+
+    this.el.contactsMessagesList
+      .querySelectorAll(".contact-item")
+      .forEach((item) => {
+        item.on("click", (e) => {
+          this.el.home.hide();
+          this.el.main.css({
+            display: "flex",
+          });
+        });
+      });
+
+    this.el.btnAttach.on("click", (e) => {
+      e.stopPropagation();
+      this.el.menuAttach.addClass("open");
+      document.addEventListener("click", this.closeMenuAttach.bind(this));
+    });
+
+    this.el.btnAttachPhoto.on("click", (e) => {
+      console.log("photo");
+    });
+
+    this.el.btnAttachCamera.on("click", (e) => {
+      console.log("Camera");
+    });
+
+    this.el.btnAttachDocument.on("click", (e) => {
+      console.log("Document");
+    });
+
+    this.el.btnAttachContact.on("click", (e) => {
+      console.log("Contact");
+    });
+  }
+
+  closeMenuAttach(e) {
+    document.removeEventListener("click", this.closeMenuAttach);
+    this.el.menuAttach.removeClass("open");
   }
 
   closeAllLeftPanel() {
-    this.el.panelAddContact.hide();
     this.el.panelEditProfile.hide();
+    this.el.panelAddContact.hide();
   }
 }
