@@ -1,0 +1,26 @@
+{
+  "name": "projetowhatsappclone",
+  "version": "1.0.0",
+  "description": "Curso JS avançado ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack serve --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joaodematejr/course_js.git"
+  },
+  "author": "João Dematé Jr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joaodematejr/course_js/issues"
+  },
+  "homepage": "https://github.com/joaodematejr/course_js#readme",
+  "devDependencies": {
+    "webpack": "^5.48.0",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-cli": "^4.7.2"
+  }
+}
