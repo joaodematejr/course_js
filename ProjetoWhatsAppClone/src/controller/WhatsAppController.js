@@ -165,6 +165,7 @@ export class WhatsAppController {
     this.el.btnClosePanelCamera.on('click', (e) => {
       this.el.panelMessagesContainer.show()
       this.el.panelCamera.removeClass('open')
+      this._camera.stop();
     })
 
     this.el.btnTakePicture.on('click', (e) => {
