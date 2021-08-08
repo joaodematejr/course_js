@@ -196,6 +196,25 @@ export class WhatsAppController {
       this.el.panelDocumentPreview.css({
         height: 'calc(100% - 120px)',
       })
+      this.el.inputDocument.click()
+    })
+
+    this.el.inputDocument.on('change', (e) => {
+      if (this.el.inputDocument.files.length) {
+        let file = this.el.inputDocument.files[0]
+
+        this._documentPreviewController = new DocumentPreviewController(
+          file,
+        )
+        this._documentPreviewController
+          .getPreviewData()
+          .then((data) => {
+            console.log('ok', data)
+          })
+          .catch((err) => {
+            console.log('erro', err)
+          })
+      }
     })
 
     this.el.btnClosePanelDocumentPreview.on('click', (e) => {
