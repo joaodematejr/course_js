@@ -10,9 +10,22 @@ export class DocumentPreviewController {
         case 'image/jpeg':
         case 'image/jpg':
         case 'image/gif':
+          let reader = new FileReader()
+          reader.onload = (e) => {
+            s({
+              src: reader.result,
+              info: this._file.name,
+            })
+          }
+          reader.onerror = (e) => {
+            f(e)
+          }
+          reader.readAsDataURL(this._file)
           break
-
+        case 'application/pdf':
+          break
         default:
+          f()
           break
       }
     })
