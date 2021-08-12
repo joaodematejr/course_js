@@ -10,13 +10,11 @@ export class DocumentPreviewController {
   getPreviewData() {
     return new Promise((s, f) => {
       let reader = new FileReader()
-      console.log("reader.result", this._file)
       switch (this._file.type) {
         case 'image/png':
         case 'image/jpeg':
         case 'image/jpg':
         case 'image/gif':
-          
           reader.onload = (e) => {
             s({
               src: reader.result,
@@ -29,20 +27,41 @@ export class DocumentPreviewController {
           reader.readAsDataURL(this._file)
           break
         case 'application/pdf':
-          console.log("reader.result", reader)
-          /* reader.onload = (e) => {
+          reader.onload = (e) => {
             const loadingTask = pdfjsLib.getDocument(
               new Uint8Array(reader.result),
             )
-            loadingTask
+            loadingTask.promise
               .then((pdf) => {
-                console.log('pdf', pdf)
+                pdf
+                  .getPage(1)
+                  .then((page) => {
+                    let viewport = page.getViewport(1)
+                    let canvas = document.createElement('canvas')
+                    let canvasContext = canvas.getContext('2d')
+                    canvas.width = viewport.width
+                    canvas.height = viewport.height
+                    var renderTask = page.render({
+                      canvasContext,
+                      viewport,
+                    })
+                    renderTask.promise.then(function () {
+                      let _s = pdf.numPages > 1 ? 's' : ''
+                      s({
+                        src: canvas.toDataURL('image/png'),
+                        info: `${pdf.numPages} página${_s}`,
+                      })
+                    })
+                  })
+                  .catch((err) => {
+                    f(err)
+                  })
               })
               .catch((err) => {
-                f(rer)
+                f(err)
               })
           }
-          reader.readAsArrayBuffer(this._file) */
+          reader.readAsArrayBuffer(this._file)
           break
         default:
           f()
